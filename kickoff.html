@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Showcase</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ff4757 0%, #ff3742 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .nav-toggle {
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-toggle:hover {
+            background: rgba(0, 0, 0, 1);
+            transform: scale(1.1);
+        }
+
+        /* Event Cards */
+        .events-container {
+            padding: 80px 0;
+        }
+
+        .event-card {
+            display: flex;
+            align-items: center;
+            margin-bottom: 120px;
+            position: relative;
+            min-height: 70vh;
+        }
+
+        .event-card:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .event-content {
+            flex: 1;
+            padding: 40px;
+            z-index: 2;
+        }
+
+        .event-image {
+            flex: 1;
+            position: relative;
+            z-index: 1;
+        }
+
+        .event-image img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .event-image img:hover {
+            transform: scale(1.05);
+        }
+
+        .event-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            color: white;
+            line-height: 0.9;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: -2px;
+        }
+
+        .event-tags {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            padding: 8px 16px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 25px;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .tag:hover {
+            background: white;
+            color: #ff4757;
+            border-color: white;
+        }
+
+        .read-more {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid white;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .read-more:hover {
+            background: white;
+            color: #ff4757;
+            transform: translateY(-2px);
+        }
+
+        .read-more::after {
+            content: '→';
+            font-size: 1.2em;
+            transition: transform 0.3s ease;
+        }
+
+        .read-more:hover::after {
+            transform: translateX(5px);
+        }
+
+        /* Number Overlay */
+        .event-number {
+            position: absolute;
+            right: -50px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: clamp(8rem, 15vw, 20rem);
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.1);
+            z-index: 0;
+            line-height: 1;
+            pointer-events: none;
+        }
+
+        .event-card:nth-child(even) .event-number {
+            left: -50px;
+            right: auto;
+        }
+
+        /* Geometric Shapes */
+        .shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.05);
+            pointer-events: none;
+        }
+
+        .shape-1 {
+            width: 200px;
+            height: 200px;
+            top: 10%;
+            left: 5%;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape-2 {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            right: 10%;
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite reverse;
+        }
+
+        .shape-3 {
+            width: 100px;
+            height: 100px;
+            bottom: 20%;
+            left: 15%;
+            transform: rotate(45deg);
+            animation: float 7s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        /* View All Button */
+        .view-all {
+            text-align: center;
+            margin: 80px 0;
+        }
+
+        .view-all-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid white;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .view-all-btn:hover {
+            background: white;
+            color: #ff4757;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .view-all-btn::before {
+            content: '📅';
+            font-size: 1.2em;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .event-card {
+                flex-direction: column !important;
+                text-align: center;
+                margin-bottom: 80px;
+            }
+
+            .event-content {
+                order: 2;
+                padding: 30px 20px;
+            }
+
+            .event-image {
+                order: 1;
+                margin-bottom: 30px;
+            }
+
+            .event-number {
+                position: relative !important;
+                right: auto !important;
+                left: auto !important;
+                top: auto !important;
+                transform: none !important;
+                font-size: clamp(4rem, 10vw, 8rem);
+                margin: 20px 0;
+                color: rgba(255, 255, 255, 0.2);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .events-container {
+                padding: 60px 0;
+            }
+
+            .event-card {
+                margin-bottom: 60px;
+            }
+
+            .event-content {
+                padding: 20px 10px;
+            }
+
+            .event-image img {
+                height: 250px;
+            }
+
+            .event-title {
+                font-size: clamp(1.8rem, 6vw, 2.5rem);
+                margin-bottom: 20px;
+            }
+
+            .event-tags {
+                justify-content: center;
+            }
+
+            .tag {
+                font-size: 0.8rem;
+                padding: 6px 12px;
+            }
+
+            .shape-1, .shape-2, .shape-3 {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav {
+                top: 15px;
+                left: 15px;
+            }
+
+            .nav-toggle {
+                width: 45px;
+                height: 45px;
+            }
+
+            .event-title {
+                font-size: clamp(1.5rem, 8vw, 2rem);
+                letter-spacing: -1px;
+            }
+
+            .read-more, .view-all-btn {
+                padding: 12px 24px;
+                font-size: 0.9rem;
+            }
+
+            .view-all {
+                margin: 60px 0;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Loading animation */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .event-card:nth-child(1) { animation-delay: 0.1s; }
+        .event-card:nth-child(2) { animation-delay: 0.2s; }
+        .event-card:nth-child(3) { animation-delay: 0.3s; }
+        .event-card:nth-child(4) { animation-delay: 0.4s; }
+        .event-card:nth-child(5) { animation-delay: 0.5s; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-toggle">CO</div>
+    </nav>
+
+    <!-- Geometric Shapes -->
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="events-container">
+            <!-- Event 1 -->
+            <div class="event-card fade-in">
+                <div class="event-content">
+                    <h1 class="event-title">
+                        Switch - Sopra<br>
+                        Steria Kick Off<br>
+                        2025
+                    </h1>
+                    <div class="event-tags">
+                        <span class="tag">Norway</span>
+                        <span class="tag">B2E Event</span>
+                    </div>
+                    <a href="#" class="read-more">Read More</a>
+                </div>
+                <div class="event-image">
+                    <img src="/1.jpg" alt="Switch - Sopra Steria Kick Off 2025">
+                </div>
+                <div class="event-number">01</div>
+            </div>
+
+            <!-- Event 2 -->
+            <div class="event-card fade-in">
+                <div class="event-content">
+                    <h1 class="event-title">
+                        Switch - Sopra<br>
+                        Steria Kick Off<br>
+                        2025
+                    </h1>
+                    <div class="event-tags">
+                        <span class="tag">Norway</span>
+                        <span class="tag">B2E Event</span>
+                    </div>
+                    <a href="#" class="read-more">Read More</a>
+                </div>
+                <div class="event-image">
+                    <img src="/2.jpg" alt="Switch - Sopra Steria Event">
+                </div>
+                <div class="event-number">01</div>
+            </div>
+
+            <!-- Event 3 -->
+            <div class="event-card fade-in">
+                <div class="event-content">
+                    <h1 class="event-title">
+                        Grand Hotel<br>
+                        Oslo 150 Years
+                    </h1>
+                    <div class="event-tags">
+                        <span class="tag">Norway</span>
+                        <span class="tag">Anniversary</span>
+                    </div>
+                    <a href="#" class="read-more">Read More</a>
+                </div>
+                <div class="event-image">
+                    <img src="/3.jpg" alt="Grand Hotel Oslo 150 Years">
+                </div>
+                <div class="event-number">02</div>
+            </div>
+
+            <!-- Event 4 -->
+            <div class="event-card fade-in">
+                <div class="event-content">
+                    <h1 class="event-title">
+                        Informal<br>
+                        Meeting of NATO<br>
+                        Ministers of<br>
+                        Foreign<br>
+                        Affairs in<br>
+                        Oslo, Norway
+                    </h1>
+                    <div class="event-tags">
+                        <span class="tag">Norway</span>
+                        <span class="tag">B2B Event</span>
+                    </div>
+                    <a href="#" class="read-more">Read More</a>
+                </div>
+                <div class="event-image">
+                    <img src="/4.jpg" alt="NATO Ministers Meeting Oslo">
+                </div>
+                <div class="event-number">03</div>
+            </div>
+        </div>
+
+        <!-- View All Button -->
+        <div class="view-all">
+            <a href="#" class="view-all-btn">View All Cases</a>
+        </div>
+    </div>
+
+    <script>
+        // Add smooth scroll behavior and intersection observer for animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Intersection Observer for fade-in animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationPlayState = 'running';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all fade-in elements
+            document.querySelectorAll('.fade-in').forEach(el => {
+                el.style.animationPlayState = 'paused';
+                observer.observe(el);
+            });
+
+            // Add click handlers for interactive elements
+            document.querySelectorAll('.read-more, .view-all-btn').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Add your navigation logic here
+                    console.log('Navigate to:', this.textContent);
+                });
+            });
+
+            // Navigation toggle functionality
+            document.querySelector('.nav-toggle').addEventListener('click', function() {
+                // Add your menu toggle logic here
+                console.log('Menu toggled');
+            });
+
+            // Add parallax effect to background shapes
+            window.addEventListener('scroll', function() {
+                const scrolled = window.pageYOffset;
+                const shapes = document.querySelectorAll('.shape');
+                
+                shapes.forEach((shape, index) => {
+                    const speed = 0.5 + (index * 0.1);
+                    shape.style.transform = `translateY(${scrolled * speed}px)`;
+                });
+            });
+        });
+    </script>
+</body>
+</html>

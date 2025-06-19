@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beautiful Water Ripple Mouse Effect</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            cursor: none;
+            overflow: hidden;
+            height: 100vh;
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #312e81 100%);
+            position: relative;
+        }
+
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .background-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(34, 211, 238, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(16, 185, 129, 0.15) 0%, transparent 50%);
+            z-index: 1;
+        }
+
+        .animated-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.3;
+            z-index: 2;
+        }
+
+        .bg-circle-1 {
+            position: absolute;
+            top: 25%;
+            left: 25%;
+            width: 128px;
+            height: 128px;
+            background: rgba(96, 165, 250, 0.2);
+            border-radius: 50%;
+            filter: blur(40px);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        .bg-circle-2 {
+            position: absolute;
+            top: 75%;
+            right: 25%;
+            width: 192px;
+            height: 192px;
+            background: rgba(34, 211, 238, 0.2);
+            border-radius: 50%;
+            filter: blur(60px);
+            animation: pulse 3s ease-in-out infinite 1s;
+        }
+
+        .bg-circle-3 {
+            position: absolute;
+            bottom: 25%;
+            left: 50%;
+            width: 96px;
+            height: 96px;
+            background: rgba(20, 184, 166, 0.2);
+            border-radius: 50%;
+            filter: blur(30px);
+            animation: pulse 3s ease-in-out infinite 0.5s;
+        }
+
+        .ripple-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+        }
+
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(
+                circle,
+                rgba(255, 255, 255, 0.8) 0%,
+                rgba(59, 130, 246, 0.6) 30%,
+                rgba(34, 211, 238, 0.4) 60%,
+                transparent 100%
+            );
+            box-shadow: 
+                0 0 20px rgba(59, 130, 246, 0.3),
+                0 0 40px rgba(34, 211, 238, 0.2),
+                inset 0 0 20px rgba(255, 255, 255, 0.1);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            animation: rippleExpand 2s ease-out forwards;
+        }
+
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(
+                circle,
+                rgba(255, 255, 255, 0.9) 0%,
+                rgba(59, 130, 246, 0.7) 50%,
+                transparent 100%
+            );
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            box-shadow: 
+                0 0 10px rgba(59, 130, 246, 0.5),
+                0 0 20px rgba(34, 211, 238, 0.3);
+            animation: cursorPulse 2s ease-in-out infinite;
+            transition: all 0.1s ease-out;
+        }
+
+        .content {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .content-inner {
+            max-width: 48rem;
+            margin: 0 auto;
+        }
+
+        .title {
+            font-size: 4rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.025em;
+            line-height: 1.1;
+        }
+
+        .title-gradient {
+            background: linear-gradient(to right, #60a5fa, #67e8f9);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .description {
+            font-size: 1.25rem;
+            color: #bfdbfe;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #bfdbfe;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #22d3ee;
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes rippleExpand {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 1;
+            }
+            50% {
+                width: 200px;
+                height: 200px;
+                opacity: 0.7;
+            }
+            100% {
+                width: 400px;
+                height: 400px;
+                opacity: 0;
+            }
+        }
+
+        @keyframes cursorPulse {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.6;
+                transform: scale(1.05);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.5rem;
+            }
+            
+            .description {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Background overlay -->
+        <div class="background-overlay"></div>
+        
+        <!-- Animated background elements -->
+        <div class="animated-bg">
+            <div class="bg-circle-1"></div>
+            <div class="bg-circle-2"></div>
+            <div class="bg-circle-3"></div>
+        </div>
+        
+        <!-- Ripple container -->
+        <div class="ripple-container" id="rippleContainer"></div>
+        
+        <!-- Custom cursor -->
+        <div class="custom-cursor" id="customCursor"></div>
+        
+        <!-- Content -->
+        <div class="content">
+            <div class="content-inner">
+                <h1 class="title">
+                    Water <span class="title-gradient">Ripples</span>
+                </h1>
+                <p class="description">
+                    Move your mouse across the screen to create beautiful water ripple effects. 
+                    Watch as each movement generates mesmerizing waves that expand and fade.
+                </p>
+                <div class="status">
+                    <div class="status-dot"></div>
+                    Interactive Water Surface
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables for ripple management
+        let rippleId = 0;
+        let lastRippleTime = 0;
+        const rippleThrottle = 50; // milliseconds
+
+        // Get DOM elements
+        const rippleContainer = document.getElementById('rippleContainer');
+        const customCursor = document.getElementById('customCursor');
+
+        // Throttle function
+        function throttle(func, limit) {
+            let inThrottle;
+            return function() {
+                const args = arguments;
+                const context = this;
+                if (!inThrottle) {
+                    func.apply(context, args);
+                    inThrottle = true;
+                    setTimeout(() => inThrottle = false, limit);
+                }
+            }
+        }
+
+        // Create ripple effect
+        function createRipple(x, y) {
+            const currentTime = Date.now();
+            if (currentTime - lastRippleTime < rippleThrottle) {
+                return;
+            }
+            lastRippleTime = currentTime;
+
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            ripple.style.width = '0px';
+            ripple.style.height = '0px';
+            
+            rippleContainer.appendChild(ripple);
+
+            // Remove ripple after animation completes
+            setTimeout(() => {
+                if (ripple.parentNode) {
+                    ripple.parentNode.removeChild(ripple);
+                }
+            }, 2000);
+        }
+
+        // Mouse move handler
+        function handleMouseMove(e) {
+            // Update custom cursor position
+            customCursor.style.left = e.clientX + 'px';
+            customCursor.style.top = e.clientY + 'px';
+
+            // Create ripple at mouse position
+            createRipple(e.clientX, e.clientY);
+        }
+
+        // Throttled mouse move handler
+        const throttledMouseMove = throttle(handleMouseMove, 16); // ~60fps
+
+        // Add event listeners
+        document.addEventListener('mousemove', throttledMouseMove);
+
+        // Handle mouse enter/leave for cursor visibility
+        document.addEventListener('mouseenter', () => {
+            customCursor.style.opacity = '1';
+        });
+
+        document.addEventListener('mouseleave', () => {
+            customCursor.style.opacity = '0';
+        });
+
+        // Initialize cursor position
+        document.addEventListener('DOMContentLoaded', () => {
+            customCursor.style.left = '50%';
+            customCursor.style.top = '50%';
+        });
+    </script>
+</body>
+</html>

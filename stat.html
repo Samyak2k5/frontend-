@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embodied Carbon Emissions Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .filters {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .filter-section {
+            margin-bottom: 25px;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #a0756c;
+            border-radius: 20px;
+            background: transparent;
+            color: #a0756c;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background-color: #a0756c;
+            color: white;
+        }
+
+        .filter-btn:hover {
+            background-color: #8d6459;
+            color: white;
+            border-color: #8d6459;
+        }
+
+        .title-section {
+            text-align: right;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .main-title {
+            font-size: 3.5rem;
+            font-weight: 300;
+            color: #a0756c;
+            letter-spacing: 2px;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 15px;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border: 2px solid #ccc;
+            border-radius: 25px;
+            background: transparent;
+            color: #666;
+            text-decoration: none;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            border-color: #a0756c;
+            color: #a0756c;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .chart-legend {
+            margin-bottom: 30px;
+        }
+
+        .legend-title {
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .legend-line {
+            width: 30px;
+            height: 2px;
+            margin-right: 10px;
+        }
+
+        .legend-line.dashed {
+            border-top: 2px dashed #ccc;
+            background: none;
+        }
+
+        .legend-line.solid {
+            background-color: #999;
+        }
+
+        .chart-area {
+            position: relative;
+            height: 400px;
+            border-left: 2px solid #ddd;
+            border-bottom: 2px solid #ddd;
+            margin-top: 20px;
+        }
+
+        .y-axis {
+            position: absolute;
+            left: -80px;
+            top: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding-right: 10px;
+        }
+
+        .y-axis-label {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .y-axis-title {
+            position: absolute;
+            left: -60px;
+            top: 50%;
+            transform: rotate(-90deg) translateY(50%);
+            font-size: 12px;
+            color: #666;
+            white-space: nowrap;
+        }
+
+        .bars-container {
+            display: flex;
+            align-items: flex-end;
+            height: 100%;
+            gap: 8px;
+            padding: 0 20px;
+        }
+
+        .bar-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .bar {
+            width: 100%;
+            max-width: 40px;
+            background: linear-gradient(135deg, #a0756c, #b8857a);
+            border-radius: 3px 3px 0 0;
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .bar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(160, 117, 108, 0.3);
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            font-weight: 600;
+            color: #333;
+            white-space: nowrap;
+        }
+
+        .target-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 2px;
+            z-index: 10;
+        }
+
+        .target-line.target-2030 {
+            background: linear-gradient(to right, transparent 0%, #ccc 20%, #ccc 80%, transparent 100%);
+            border-top: 2px dashed #ccc;
+            background: none;
+            top: 200px;
+        }
+
+        .target-line.target-2025 {
+            background-color: #999;
+            top: 166px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+            }
+
+            .title-section {
+                text-align: center;
+            }
+
+            .main-title {
+                font-size: 2.5rem;
+            }
+
+            .chart-container {
+                padding: 20px;
+            }
+
+            .y-axis {
+                left: -60px;
+            }
+
+            .bars-container {
+                padding: 0 10px;
+                gap: 4px;
+            }
+
+            .bar {
+                max-width: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-title {
+                font-size: 2rem;
+            }
+
+            .filter-buttons {
+                justify-content: center;
+            }
+
+            .bars-container {
+                gap: 2px;
+            }
+
+            .bar {
+                max-width: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <div class="filters">
+                <div class="filter-section">
+                    <div class="filter-label">Filter by</div>
+                </div>
+                
+                <div class="filter-section">
+                    <div class="filter-label">Type</div>
+                    <div class="filter-buttons">
+                        <button class="filter-btn">Refurbishment</button>
+                        <button class="filter-btn">New build</button>
+                        <button class="filter-btn active">All</button>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <div class="filter-label">Status</div>
+                    <div class="filter-buttons">
+                        <button class="filter-btn active">Complete</button>
+                        <button class="filter-btn">Estimate</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="title-section">
+                <h1 class="main-title">EMBODIED<br>CARBON<br>EMISSIONS</h1>
+                <p class="subtitle">Intensity measured by kgCO₂e/m²</p>
+                <a href="#" class="download-btn">
+                    Download the data
+                    <span>↓</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-legend">
+                <div class="legend-title">Key</div>
+                <div class="legend-item">
+                    <div class="legend-line dashed"></div>
+                    <span>500 kgCO₂e/m² - Embodied Carbon Target 2030</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-line solid"></div>
+                    <span>600 kgCO₂e/m² - Embodied Carbon Target 2025</span>
+                </div>
+            </div>
+
+            <div class="chart-area">
+                <div class="y-axis">
+                    <span class="y-axis-label">1200</span>
+                    <span class="y-axis-label">1000</span>
+                    <span class="y-axis-label">800</span>
+                    <span class="y-axis-label">600</span>
+                    <span class="y-axis-label">400</span>
+                    <span class="y-axis-label">200</span>
+                    <span class="y-axis-label">0</span>
+                </div>
+                <div class="y-axis-title">Embodied carbon intensity (kgCO₂e/m²)</div>
+
+                <div class="target-line target-2030"></div>
+                <div class="target-line target-2025"></div>
+
+                <div class="bars-container">
+                    <div class="bar-group">
+                        <div class="bar" style="height: 137px;">
+                            <div class="bar-value">549</div>
+                        </div>
+                    </div>
+                    <div class="bar-group">
+                        <div class="bar" style="height: 69px;">
+                            <div class="bar-value">278</div>
+                        </div>
+                    </div>
+                    <div class="bar-group">
+                        <div class="bar" style="height: 219px;">
+                            <div class="bar-value">875</div>
+                        </div>
+                    </div>
+                    <div class="bar-group">
+                        <div class="bar" style="height: 154px;">
+                            <div class="bar-value">617</div>
+                        </div>
+                    </div>
+                    <div class="bar-group">
+                        <div class="bar" style="height: 126px;">
+                            <div class="bar-value">506</div>
+                        </div>
+                    </div>
+                    <div class="bar-group">
+                        <div class="bar" style="height: 9px;">
+                            <div class="bar-value">36</div>
+                        </div>
+                    </div>
+                    <div class="bar-group">
+                        <div class="bar" style="height: 46px;">
+                            <div class="bar-value">185</div>
+                        </div>
+                    </div>
+                    <div class="bar-group">
+                        <div class="bar" style="height: 48px;">
+                            <div class="bar-value">191</div>
+                        </div>
+                    </div>
+                    <div class="bar-group">
+                        <div class="bar" style="height: 30px;">
+                            <div class="bar-value">122</div>
+                        </div>
+                    </div>
+                    <div class="bar-group">
+                        <div class="bar" style="height: 138px;">
+                            <div class="bar-value">550</div>
+                        </div>
+                    </div>
+                    <div class="bar-group">
+                        <div class="bar" style="height: 220px;">
+                            <div class="bar-value">881</div>
+                        </div>
+                    </div>
+                    <div class="bar-group">
+                        <div class="bar" style="height: 135px;">
+                            <div class="bar-value">539</div>
+                        </div>
+                    </div>
+                    <div class="bar-group">
+                        <div class="bar" style="height: 67px;">
+                            <div class="bar-value">269</div>
+                        </div>
+                    </div>
+                    <div class="bar-group">
+                        <div class="bar" style="height: 7px;">
+                            <div class="bar-value">29</div>
+                        </div>
+                    </div>
+                    <div class="bar-group">
+                        <div class="bar" style="height: 20px;">
+                            <div class="bar-value">82</div>
+                        </div>
+                    </div>
+                    <div class="bar-group">
+                        <div class="bar" style="height: 11px;">
+                            <div class="bar-value">44</div>
+                        </div>
+                    </div>
+                    <div class="bar-group">
+                        <div class="bar" style="height: 27px;">
+                            <div class="bar-value">109</div>
+                        </div>
+                    </div>
+                    <div class="bar-group">
+                        <div class="bar" style="height: 26px;">
+                            <div class="bar-value">106</div>
+                        </div>
+                    </div>
+                    <div class="bar-group">
+                        <div class="bar" style="height: 152px;">
+                            <div class="bar-value">607</div>
+                        </div>
+                    </div>
+                    <div class="bar-group">
+                        <div class="bar" style="height: 132px;">
+                            <div class="bar-value">528</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add interactivity to filter buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active class from siblings
+                const siblings = this.parentElement.querySelectorAll('.filter-btn');
+                siblings.forEach(sibling => sibling.classList.remove('active'));
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+            });
+        });
+
+        // Add hover effects to bars
+        document.querySelectorAll('.bar').forEach(bar => {
+            bar.addEventListener('mouseenter', function() {
+                this.style.opacity = '0.8';
+            });
+            
+            bar.addEventListener('mouseleave', function() {
+                this.style.opacity = '1';
+            });
+        });
+
+        // Download button functionality
+        document.querySelector('.download-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Download functionality would be implemented here');
+        });
+    </script>
+</body>
+</html>

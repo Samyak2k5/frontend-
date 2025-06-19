@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Logos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Company Logos Section */
+        .logos-section {
+            min-height: 100vh;
+            background: #000;
+            padding: 80px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .logos-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 80px 120px;
+            max-width: 1200px;
+            width: 100%;
+            margin-bottom: 60px;
+        }
+
+        .logo-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 80px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .logo-item:nth-child(1) { animation-delay: 0.1s; }
+        .logo-item:nth-child(2) { animation-delay: 0.2s; }
+        .logo-item:nth-child(3) { animation-delay: 0.3s; }
+        .logo-item:nth-child(4) { animation-delay: 0.4s; }
+        .logo-item:nth-child(5) { animation-delay: 0.5s; }
+        .logo-item:nth-child(6) { animation-delay: 0.6s; }
+        .logo-item:nth-child(7) { animation-delay: 0.7s; }
+        .logo-item:nth-child(8) { animation-delay: 0.8s; }
+        .logo-item:nth-child(9) { animation-delay: 0.9s; }
+        .logo-item:nth-child(10) { animation-delay: 1.0s; }
+        .logo-item:nth-child(11) { animation-delay: 1.1s; }
+        .logo-item:nth-child(12) { animation-delay: 1.2s; }
+        .logo-item:nth-child(13) { animation-delay: 1.3s; }
+        .logo-item:nth-child(14) { animation-delay: 1.4s; }
+        .logo-item:nth-child(15) { animation-delay: 1.5s; }
+        .logo-item:nth-child(16) { animation-delay: 1.6s; }
+        .logo-item:nth-child(17) { animation-delay: 1.7s; }
+        .logo-item:nth-child(18) { animation-delay: 1.8s; }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 500;
+            color: #fff;
+            letter-spacing: -0.5px;
+            transition: all 0.3s ease;
+        }
+
+        .logo-item:hover .logo-text {
+            color: #007AFF;
+            transform: scale(1.05);
+        }
+
+        /* Special styling for specific logos */
+        .logo-cursor { font-weight: 600; }
+        .logo-brex { font-weight: 700; }
+        .logo-remote { font-weight: 400; }
+        .logo-arc { font-weight: 500; letter-spacing: 2px; }
+        .logo-runway { font-weight: 600; }
+        .logo-descript { font-weight: 400; }
+        .logo-ramp { font-weight: 300; font-style: italic; }
+        .logo-openai { font-weight: 500; }
+        .logo-scale { font-weight: 400; }
+        .logo-boom { font-weight: 700; }
+        .logo-cashapp { font-weight: 600; }
+        .logo-vercel { font-weight: 500; }
+        .logo-perplexity { font-weight: 400; }
+        .logo-supercell { font-weight: 700; text-transform: uppercase; font-size: 24px; }
+        .logo-monzo { font-weight: 500; }
+        .logo-raycast { font-weight: 500; }
+        .logo-retool { font-weight: 600; }
+        .logo-mercury { font-weight: 400; letter-spacing: 1px; }
+
+        /* Meet our customers button */
+        .meet-customers {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            animation: fadeIn 1s ease-out 2s forwards;
+        }
+
+        .meet-customers:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .meet-customers::after {
+            content: ' →';
+            margin-left: 8px;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .logos-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 40px 60px;
+            }
+
+            .logo-text {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logos-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .logo-text {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Company Logos Section -->
+    <section class="logos-section">
+        <div class="logos-grid">
+            <div class="logo-item">
+                <div class="logo-text logo-cursor">◆ CURSOR</div>
+            </div>
+            <div class="logo-item">
+                <div class="logo-text logo-brex">⬜ Brex</div>
+            </div>
+            <div class="logo-item">
+                <div class="logo-text logo-remote">⟲ remote</div>
+            </div>
+            <div class="logo-item">
+                <div class="logo-text logo-arc">⚬ ARC</div>
+            </div>
+            <div class="logo-item">
+                <div class="logo-text logo-runway">Ⓡ runway</div>
+            </div>
+            <div class="logo-item">
+                <div class="logo-text logo-descript">≡ descript</div>
+            </div>
+            <div class="logo-item">
+                <div class="logo-text logo-ramp">ramp ∠</div>
+            </div>
+            <div class="logo-item">
+                <div class="logo-text logo-openai">◉ OpenAI</div>
+            </div>
+            <div class="logo-item">
+                <div class="logo-text logo-scale">scale</div>
+            </div>
+            <div class="logo-item">
+                <div class="logo-text logo-boom">✓ BOOM</div>
+            </div>
+            <div class="logo-item">
+                <div class="logo-text logo-cashapp">$ Cash App</div>
+            </div>
+            <div class="logo-item">
+                <div class="logo-text logo-vercel">▲ VERCEL</div>
+            </div>
+            <div class="logo-item">
+                <div class="logo-text logo-perplexity">※ perplexity</div>
+            </div>
+            <div class="logo-item">
+                <div class="logo-text logo-supercell">SUPERCELL</div>
+            </div>
+            <div class="logo-item">
+                <div class="logo-text logo-monzo">monzo</div>
+            </div>
+            <div class="logo-item">
+                <div class="logo-text logo-raycast">⚡ Raycast</div>
+            </div>
+            <div class="logo-item">
+                <div class="logo-text logo-retool">⚒ Retool</div>
+            </div>
+            <div class="logo-item">
+                <div class="logo-text logo-mercury">◉ MERCURY</div>
+            </div>
+        </div>
+        
+        <button class="meet-customers">Meet our customers</button>
+    </section>
+</body>
+</html>
